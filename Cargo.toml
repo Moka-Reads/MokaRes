@@ -1,0 +1,13 @@
+[package]
+name = "mokares"
+version = "0.1.0"
+edition = "2021"
+description = "MoKa Resources Manager"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde_yaml = "0.9.25"
+structopt = "0.3.26"
+tokio = { version = "1.32.0", features = ["full"] }
+mokareads-core = {git = "https://github.com/Moka-Reads/MokaReads-Core"}
