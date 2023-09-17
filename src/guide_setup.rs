@@ -37,7 +37,6 @@ pub fn build() -> Result<()> {
     );
     let authors = authors
         .split(',')
-        .into_iter()
         .map(|x| x.to_string())
         .collect();
     let path = Path::new(&root_path).join(&title);

@@ -154,7 +154,7 @@ impl Display for ReadmeConf {
         let header = format!("# {}", self.header);
         let subheader = format!("## {}", self.subheader);
         let license_info = format!("> {}", self.license_info);
-        let joined = vec![header, subheader, license_info].join("\n");
+        let joined = [header, subheader, license_info].join("\n");
         f.write_str(&joined)
     }
 }
