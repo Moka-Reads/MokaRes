@@ -5,7 +5,7 @@ use mokareads_core::resources::Parser;
 use mokareads_core::Result;
 use serde::{Deserialize, Serialize};
 use std::fmt;
-use std::fmt::{Display, Formatter, Write};
+use std::fmt::{Display, Formatter};
 use std::path::PathBuf;
 use tokio::fs::{read_to_string, File};
 use tokio::io::AsyncWriteExt;
@@ -67,6 +67,13 @@ fn get_dir_names(folder: &PathBuf) -> Result<Vec<String>> {
 }
 
 impl Indexer {
+    pub async fn new() -> Result<()>{
+        let indexer = Self::default();
+        let data = indexer.to_string();
+        let mut file = File::create("indexer.toml").await?;
+        file.write_all(data.as_bytes()).await?;
+        Ok(())
+    }
     pub async fn read() -> Result<Self> {
         let indexer = read_to_string("indexer.toml").await?;
         Ok(from_str(&indexer).unwrap_or_default())
