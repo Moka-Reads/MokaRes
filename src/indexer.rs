@@ -65,15 +65,14 @@ fn get_dir_names(folder: &PathBuf) -> Result<Vec<String>> {
 
     Ok(entries)
 }
-
+pub async fn new_indexer() -> Result<()>{
+    let indexer = Indexer::default();
+    let data = indexer.to_string();
+    let mut file = File::create("indexer.toml").await?;
+    file.write_all(data.as_bytes()).await?;
+    Ok(())
+}
 impl Indexer {
-    pub async fn new() -> Result<()>{
-        let indexer = Self::default();
-        let data = indexer.to_string();
-        let mut file = File::create("indexer.toml").await?;
-        file.write_all(data.as_bytes()).await?;
-        Ok(())
-    }
     pub async fn read() -> Result<Self> {
         let indexer = read_to_string("indexer.toml").await?;
         Ok(from_str(&indexer).unwrap_or_default())

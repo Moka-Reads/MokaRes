@@ -16,13 +16,13 @@ $ cargo install --git https://github.com/Moka-Reads/MokaRes.git
 ```
 
 ## Features to Implement 
-- [ ] Create a resource
+- [X] Create a resource
   - [X] Cheatsheets
   - [X] Articles 
   - [X] Guides 
 - [ ] Update a resource (migrates to new spec)
   - [ ] Cheatsheets
   - [ ] Articles 
-- [ ] Indexing Resources 
+- [X] Indexing Resources 
 - [ ] Indexing Awesome Lists 
 - [ ] Providing Suggestions

@@ -10,7 +10,7 @@ use mokareads_core::resources::cheatsheet::{Cheatsheet, Language, Metadata as Ch
 use mokareads_core::Result;
 use std::path::Path;
 use structopt::StructOpt;
-use crate::indexer::Indexer;
+use crate::indexer::{Indexer, new_indexer};
 
 #[macro_export]
 macro_rules! prompt {
@@ -36,7 +36,7 @@ enum ResourceTypes {
 }
 #[derive(Debug, StructOpt)]
 #[structopt(about = "A Resources Manager for MoKa Reads")]
-enum CLI {
+enum Cli {
     #[structopt(about = "Create a new resource")]
     New(ResourceTypes),
     BuildIndexer,
@@ -110,9 +110,9 @@ async fn new_article() -> Result<()> {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let cli = CLI::from_args();
+    let cli = Cli::from_args();
     match cli {
-        CLI::New(rt) => match rt {
+        Cli::New(rt) => match rt {
             ResourceTypes::Cheatsheet => {
                 new_cheatsheet().await?;
             }
@@ -123,10 +123,10 @@ async fn main() -> Result<()> {
                 guide_setup::build()?;
             }
             ResourceTypes::Indexer => {
-                Indexer::new().await?;
+                new_indexer().await?;
             }
         },
-        CLI::BuildIndexer => {
+        Cli::BuildIndexer => {
             let indexer = Indexer::read().await?;
             indexer.build_readme().await?;
         }
