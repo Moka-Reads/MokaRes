@@ -2,13 +2,17 @@
 //! A Resource Manager for MoKa Reads
 //! By Mustafif Khan
 //! Under the GPLv2 License
-use std::path::Path;
+mod guide_setup;
+mod indexer;
+
 use mokareads_core::resources::article::{Article, Metadata as ArticleMetadata};
 use mokareads_core::resources::cheatsheet::{Cheatsheet, Language, Metadata as CheatsheetMetadata};
+use mokareads_core::Result;
+use std::path::Path;
 use structopt::StructOpt;
-use tokio::io::Result;
 
-macro_rules! get_metadata {
+#[macro_export]
+macro_rules! prompt {
     ($($var:ident : $msg:expr), *) => {
         $(
             let $var: String = {
@@ -26,6 +30,7 @@ macro_rules! get_metadata {
 enum ResourceTypes {
     Cheatsheet,
     Article,
+    Guide,
 }
 #[derive(Debug, StructOpt)]
 #[structopt(about = "A Resources Manager for MoKa Reads")]
@@ -35,7 +40,7 @@ enum CLI {
 }
 
 async fn new_cheatsheet() -> Result<()> {
-    get_metadata!(
+    prompt!(
         title: "Title:",
         author: "Author:",
         level: "Level:",
@@ -45,6 +50,13 @@ async fn new_cheatsheet() -> Result<()> {
             format!("Icon: (suggestion {})", language.icon_suggestion())
         }
     );
+
+    let mut icon = icon;
+
+    if icon.is_empty() {
+        let language = Language::from_str(&lang.to_lowercase());
+        icon = language.icon_suggestion();
+    }
 
     let level: u8 = level.parse().unwrap();
     let metadata = CheatsheetMetadata::new(&title, &author, level, &lang, &icon);
@@ -56,9 +68,9 @@ async fn new_cheatsheet() -> Result<()> {
 
     // check if file exists first
     let path = Path::new(&file_name);
-    if path.exists(){
+    if path.exists() {
         println!("File already exists!");
-        return Ok(())
+        return Ok(());
     }
 
     tokio::fs::write(file_name, md).await?;
@@ -67,7 +79,7 @@ async fn new_cheatsheet() -> Result<()> {
 }
 
 async fn new_article() -> Result<()> {
-    get_metadata!(
+    prompt!(
         title: "Title:",
         description: "Description:",
         author: "Author:",
@@ -83,9 +95,9 @@ async fn new_article() -> Result<()> {
     let md = article.to_markdown();
 
     let path = Path::new(&file_name);
-    if path.exists(){
+    if path.exists() {
         println!("File already exists!");
-        return Ok(())
+        return Ok(());
     }
 
     tokio::fs::write(file_name, md).await?;
@@ -103,6 +115,9 @@ async fn main() -> Result<()> {
             }
             ResourceTypes::Article => {
                 new_article().await?;
+            }
+            ResourceTypes::Guide => {
+                guide_setup::build()?;
             }
         },
     }

@@ -11,3 +11,7 @@ serde_yaml = "0.9.25"
 structopt = "0.3.26"
 tokio = { version = "1.32.0", features = ["full"] }
 mokareads-core = {git = "https://github.com/Moka-Reads/MokaReads-Core"}
+mdbook = "0.4.34"
+toml = "0.8.0"
+serde = { version = "1.0.188", features = ["derive"] }
+walkdir = "2.4.0"
