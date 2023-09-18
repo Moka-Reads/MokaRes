@@ -2,7 +2,10 @@
 //! A Resource Manager for MoKa Reads
 //! By Mustafif Khan
 //! Under the GPLv2 License
+
+/// Setups the guide builder
 mod guide_setup;
+/// The indexer to build README
 mod indexer;
 
 use crate::indexer::{new_indexer, Indexer};
@@ -12,6 +15,17 @@ use mokareads_core::Result;
 use std::path::Path;
 use structopt::StructOpt;
 
+/// Provides a way to do multiple user inputs in an easy macro
+/// Given the syntax <variable ident>: <prompt>
+/// Usage:
+/// ```rust
+/// prompt!{
+///     var1: "Prompt for var 1: ",
+///     var2: {
+///         "A block for the prompt of var 2: "
+///     }
+/// }
+/// ```
 #[macro_export]
 macro_rules! prompt {
     ($($var:ident : $msg:expr), *) => {
@@ -27,6 +41,7 @@ macro_rules! prompt {
     };
 }
 
+/// The different types of resources that a user can create
 #[derive(Debug, StructOpt)]
 enum ResourceTypes {
     Cheatsheet,
@@ -34,14 +49,18 @@ enum ResourceTypes {
     Guide,
     Indexer,
 }
+
+/// The CLI commands
 #[derive(Debug, StructOpt)]
 #[structopt(about = "A Resources Manager for MoKa Reads")]
 enum Cli {
     #[structopt(about = "Create a new resource")]
     New(ResourceTypes),
+    #[structopt(about = "Build the README from `./indexer.toml`")]
     BuildIndexer,
 }
 
+/// Creates a new cheatsheet with prompts
 async fn new_cheatsheet() -> Result<()> {
     prompt!(
         title: "Title:",
@@ -81,6 +100,7 @@ async fn new_cheatsheet() -> Result<()> {
     Ok(())
 }
 
+/// Creates a new article with prompts
 async fn new_article() -> Result<()> {
     prompt!(
         title: "Title:",

@@ -3,6 +3,8 @@ use mdbook::config::HtmlConfig;
 use mdbook::{Config, MDBook};
 use mokareads_core::Result;
 use std::path::Path;
+
+/// Sets up the Guide's configuration
 fn setup_config(title: String, authors: Vec<String>, description: String) -> Result<Config> {
     let mut config = Config::default();
     config.book.authors = authors;
@@ -24,6 +26,7 @@ fn setup_config(title: String, authors: Vec<String>, description: String) -> Res
     Ok(config)
 }
 
+/// Builds the Guide given a prompt to setup the configuration
 pub fn build() -> Result<()> {
     prompt!(
       title: "Title: ",
