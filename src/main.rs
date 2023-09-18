@@ -5,12 +5,12 @@
 mod guide_setup;
 mod indexer;
 
+use crate::indexer::{new_indexer, Indexer};
 use mokareads_core::resources::article::{Article, Metadata as ArticleMetadata};
 use mokareads_core::resources::cheatsheet::{Cheatsheet, Language, Metadata as CheatsheetMetadata};
 use mokareads_core::Result;
 use std::path::Path;
 use structopt::StructOpt;
-use crate::indexer::{Indexer, new_indexer};
 
 #[macro_export]
 macro_rules! prompt {

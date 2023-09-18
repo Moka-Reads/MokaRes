@@ -65,12 +65,20 @@ fn get_dir_names(folder: &PathBuf) -> Result<Vec<String>> {
 
     Ok(entries)
 }
-pub async fn new_indexer() -> Result<()>{
+pub async fn new_indexer() -> Result<()> {
     let indexer = Indexer::default();
     let data = indexer.to_string();
     let mut file = File::create("indexer.toml").await?;
     file.write_all(data.as_bytes()).await?;
     Ok(())
+}
+
+fn capitalize_first(input: &str) -> String {
+    let (first_char, rest) = input.split_at(1);
+    let mut capitalized = String::with_capacity(input.len());
+    capitalized.push_str(&first_char.to_ascii_uppercase());
+    capitalized.push_str(rest);
+    return capitalized;
 }
 impl Indexer {
     pub async fn read() -> Result<Self> {
@@ -117,7 +125,12 @@ impl Indexer {
         contents.push("## Cheatsheets  ".to_string());
 
         for (c, path) in cheatsheets {
-            let s = format!("- **{}**: [{}]({:?})", c.lang(), c.title(), path);
+            let s = format!(
+                "- **{}**: [{}]({:?})",
+                c.lang(),
+                capitalize_first(&c.title()),
+                path
+            );
             contents.push(s)
         }
 
