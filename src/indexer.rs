@@ -117,7 +117,7 @@ impl Indexer {
         contents.push("## Articles  ".to_string());
 
         for (a, path) in articles {
-            let s = format!("- [{}]({:?})", a.title(), path);
+            let s = format!("- [{}]({})", a.title(), path.to_str().unwrap());
             contents.push(s)
         }
 
@@ -125,10 +125,10 @@ impl Indexer {
 
         for (c, path) in cheatsheets {
             let s = format!(
-                "- **{}**: [{}]({:?})",
-                c.lang(),
+                "- **{}**: [{}]({})",
+                capitalize_first(&c.lang()),
                 capitalize_first(&c.title()),
-                path
+                path.to_str().unwrap()
             );
             contents.push(s)
         }
