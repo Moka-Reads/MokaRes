@@ -1383,11 +1383,12 @@ dependencies = [
 
 [[package]]
 name = "mokares"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "mdbook",
  "mokareads-core",
  "serde",
+ "serde_json",
  "serde_yaml",
  "structopt",
  "tokio",

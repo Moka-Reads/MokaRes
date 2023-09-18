@@ -1,6 +1,6 @@
 [package]
 name = "mokares"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 description = "MoKa Resources Manager"
 
@@ -15,3 +15,4 @@ mdbook = "0.4.34"
 toml = "0.8.0"
 serde = { version = "1.0.188", features = ["derive"] }
 walkdir = "2.4.0"
+serde_json = "1.0.107"

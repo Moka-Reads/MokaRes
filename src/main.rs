@@ -9,10 +9,14 @@ mod guide_setup;
 mod indexer;
 
 use crate::indexer::{new_indexer, Indexer};
+use mokareads_core::awesome_lists::AwesomeList;
 use mokareads_core::resources::article::{Article, Metadata as ArticleMetadata};
 use mokareads_core::resources::cheatsheet::{Cheatsheet, Language, Metadata as CheatsheetMetadata};
 use mokareads_core::Result;
+use tokio::fs::File;
+use tokio::io::AsyncWriteExt;
 use std::path::Path;
+use std::time::Duration;
 use structopt::StructOpt;
 
 /// Provides a way to do multiple user inputs in an easy macro
@@ -58,6 +62,13 @@ enum Cli {
     New(ResourceTypes),
     #[structopt(about = "Build the README from `./indexer.toml`")]
     BuildIndexer,
+    #[structopt(about = "Generates a `awesome.json` given the amount of pages wanted")]
+    GenerateAwesome{
+        #[structopt(short, long)]
+        pages: usize, 
+        #[structopt(short, long)]
+        attempts: Option<usize> // default 1
+    }
 }
 
 /// Creates a new cheatsheet with prompts
@@ -149,6 +160,32 @@ async fn main() -> Result<()> {
         Cli::BuildIndexer => {
             let indexer = Indexer::read().await?;
             indexer.build_readme().await?;
+        }
+        Cli::GenerateAwesome { pages, attempts } => {
+            let mut awesome_list = AwesomeList::default();
+            let attempts = attempts.unwrap_or(1);
+
+            for i in 1..=attempts{
+                if let Ok(val) = AwesomeList::new(pages).await{
+                    awesome_list = val;
+                    break;
+                }else {
+                    if i == attempts{
+                        println!("Ran out of attempts, unable to generate!");
+                        println!("Try lowering the pages number...");
+                        return Ok(());
+                    }
+                    // put the thread to sleep for 10 seconds so we aren't 
+                    // constantly sending github requests and potentially DDOSing
+                    std::thread::sleep(Duration::from_secs(10));
+                    continue;
+                }
+            }
+            
+            let data = serde_json::to_string_pretty(&awesome_list).unwrap();
+            let mut file = File::create("awesome.json").await?;
+            file.write_all(data.as_bytes()).await?;
+            println!("Successfully generated `awesome.json`");
         }
     }
 
