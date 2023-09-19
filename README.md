@@ -24,5 +24,5 @@ $ cargo install --git https://github.com/Moka-Reads/MokaRes.git
   - [ ] Cheatsheets
   - [ ] Articles 
 - [X] Indexing Resources 
-- [ ] Indexing Awesome Lists 
+- [X] Indexing Awesome Lists 
 - [ ] Providing Suggestions
